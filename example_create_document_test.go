@@ -29,8 +29,8 @@ import (
 	"fmt"
 	"log"
 
-	driver "github.com/arangodb/go-driver"
-	"github.com/arangodb/go-driver/http"
+	driver "github.com/SoufienMIMS/go-driver"
+	"github.com/SoufienMIMS/go-driver/http"
 )
 
 type Book struct {

@@ -27,7 +27,7 @@ import (
 	"reflect"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // createDocument creates a document in the given collection, failing the test on error.

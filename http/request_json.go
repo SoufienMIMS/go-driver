@@ -34,7 +34,7 @@ import (
 	"strconv"
 	"strings"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // httpRequest implements driver.Request using standard golang http requests.

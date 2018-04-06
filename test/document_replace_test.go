@@ -27,7 +27,7 @@ import (
 	"reflect"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestReplaceDocument creates a document, replaces it and then checks the replacement has succeeded.

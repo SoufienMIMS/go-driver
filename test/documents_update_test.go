@@ -29,7 +29,7 @@ import (
 	"strings"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestUpdateDocuments1 creates documents, updates them and then checks the updates have succeeded.

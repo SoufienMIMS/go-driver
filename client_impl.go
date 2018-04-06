@@ -26,7 +26,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/arangodb/go-driver/util"
+	"github.com/SoufienMIMS/go-driver/util"
 )
 
 // NewClient creates a new Client based on the given config setting.

@@ -26,7 +26,7 @@ import (
 	"context"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestContextParentNil calls all WithXyz context functions with a nil parent context.

@@ -29,7 +29,7 @@ import (
 	"reflect"
 	"strings"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 	velocypack "github.com/arangodb/go-velocypack"
 )
 

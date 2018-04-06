@@ -29,7 +29,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // Authentication implements a kind of authentication.
@@ -186,6 +186,28 @@ func (c *authenticatedConnection) Do(ctx context.Context, req driver.Request) (d
 	}
 	// Do the authenticated request
 	resp, err := c.conn.Do(ctx, req)
+	if err != nil {
+		return nil, driver.WithStack(err)
+	}
+	return resp, nil
+}
+
+// DoDecode performs a given request, returning its response.
+func (c *authenticatedConnection) DoDecode(ctx context.Context, req driver.Request, obj interface{}) (driver.Response, error) {
+	if atomic.LoadInt32(&c.prepared) == 0 {
+		// Probably we're not yet prepared
+		if err := c.prepare(ctx); err != nil {
+			// Authentication failed
+			return nil, driver.WithStack(err)
+		}
+	}
+	// Configure the request for authentication.
+	if err := c.auth.Configure(req); err != nil {
+		// Failed to configure request for authentication
+		return nil, driver.WithStack(err)
+	}
+	// Do the authenticated request
+	resp, err := c.conn.DoDecode(ctx, req, obj)
 	if err != nil {
 		return nil, driver.WithStack(err)
 	}

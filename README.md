@@ -1,7 +1,7 @@
 # ArangoDB GO Driver.
 
 [![Build Status](https://travis-ci.org/arangodb/go-driver.svg?branch=master)](https://travis-ci.org/arangodb/go-driver)
-[![GoDoc](https://godoc.org/github.com/arangodb/g-driver?status.svg)](http://godoc.org/github.com/arangodb/go-driver)
+[![GoDoc](https://godoc.org/github.com/SoufienMIMS/g-driver?status.svg)](http://godoc.org/github.com/SoufienMIMS/go-driver)
 
 API and implementation is considered stable, more protocols (Velocystream) are being added within the existing API.
 
@@ -23,7 +23,7 @@ This project contains a Go driver for the [ArangoDB database](https://arangodb.c
 To use the driver, first fetch the sources into your GOPATH.
 
 ```sh
-go get github.com/arangodb/go-driver
+go get github.com/SoufienMIMS/go-driver
 ```
 
 Using the driver, you always need to create a `Client`.
@@ -34,8 +34,8 @@ running on localhost.
 import (
 	"fmt"
 
-	driver "github.com/arangodb/go-driver"
-	"github.com/arangodb/go-driver/http"
+	driver "github.com/SoufienMIMS/go-driver"
+	"github.com/SoufienMIMS/go-driver/http"
 )
 
 ...
@@ -119,7 +119,7 @@ wrapper library.
 If you for example use https://github.com/pkg/errors, you want to initialize to go driver like this:
 ```go
 import (
-    driver "github.com/arangodb/go-driver"
+    driver "github.com/SoufienMIMS/go-driver"
     "github.com/pkg/errors"
 )
 

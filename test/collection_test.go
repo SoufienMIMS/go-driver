@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // ensureCollection is a helper to check if a collection exists and create if if needed.

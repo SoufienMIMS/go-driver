@@ -30,10 +30,10 @@ import (
 	"net/url"
 	"strings"
 
-	driver "github.com/arangodb/go-driver"
-	"github.com/arangodb/go-driver/cluster"
-	"github.com/arangodb/go-driver/util"
-	"github.com/arangodb/go-driver/vst/protocol"
+	driver "github.com/SoufienMIMS/go-driver"
+	"github.com/SoufienMIMS/go-driver/cluster"
+	"github.com/SoufienMIMS/go-driver/util"
+	"github.com/SoufienMIMS/go-driver/vst/protocol"
 	velocypack "github.com/arangodb/go-velocypack"
 )
 

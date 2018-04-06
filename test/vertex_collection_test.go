@@ -26,7 +26,7 @@ import (
 	"context"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // ensureVertexCollection returns the vertex collection with given name, creating it if needed.

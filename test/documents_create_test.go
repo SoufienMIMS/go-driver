@@ -27,7 +27,7 @@ import (
 	"reflect"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestCreateDocuments creates a document and then checks that it exists.

@@ -27,7 +27,7 @@ import (
 	"fmt"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestImportEdgesWithKeys imports documents and then checks that it exists.

@@ -28,7 +28,7 @@ import (
 	"context"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestServerModeAndGrants checks user access grants in combination with

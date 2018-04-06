@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 func TestDatabaseTransaction(t *testing.T) {

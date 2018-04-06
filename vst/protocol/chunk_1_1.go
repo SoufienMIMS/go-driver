@@ -26,7 +26,7 @@ import (
 	"encoding/binary"
 	"io"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // readChunkVST1_1 reads an entire chunk from the given reader in VST 1.1 format.

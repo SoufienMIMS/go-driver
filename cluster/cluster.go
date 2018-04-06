@@ -32,7 +32,7 @@ import (
 	"sync"
 	"time"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 const (
@@ -151,6 +151,106 @@ func (c *clusterConnection) Do(ctx context.Context, req driver.Request) (driver.
 		// Send request to specific endpoint with a 1/3 timeout (so we get 3 attempts)
 		serverCtx, cancel := context.WithTimeout(ctx, time.Duration(float64(timeout)/timeoutDivider))
 		resp, err := s.Do(serverCtx, req)
+		cancel()
+
+		isNoLeaderResponse := false
+		if err == nil && resp.StatusCode() == 503 {
+			// Service unavailable, parse the body, perhaps this is a "no leader"
+			// case where we have to failover.
+			var aerr driver.ArangoError
+			if perr := resp.ParseBody("", &aerr); perr == nil && aerr.HasError {
+				if driver.IsNoLeader(aerr) {
+					isNoLeaderResponse = true
+					// Save error in case we have no more servers
+					err = aerr
+				}
+			}
+
+		}
+		if !isNoLeaderResponse || !followLeaderRedirect {
+			if err == nil {
+				// We're done
+				return resp, nil
+			}
+			// No success yet
+			if driver.IsCanceled(err) {
+				// Request was cancelled, we return directly.
+				return nil, driver.WithStack(err)
+			}
+			// If we've completely written the request, we return the error,
+			// otherwise we'll failover to a new server.
+			if req.Written() {
+				// Request has been written to network, do not failover
+				if driver.IsArangoError(err) {
+					// ArangoError, so we got an error response from server.
+					return nil, driver.WithStack(err)
+				}
+				// Not an ArangoError, so it must be some kind of timeout, network ... error.
+				return nil, driver.WithStack(&driver.ResponseError{Err: err})
+			}
+		}
+
+		// Failed, try next server
+		attempt++
+		if specificServer != nil {
+			// A specific server was specified, no failover.
+			return nil, driver.WithStack(err)
+		}
+		if attempt > len(c.servers) {
+			// We've tried all servers. Giving up.
+			return nil, driver.WithStack(err)
+		}
+		s = c.getNextServer()
+	}
+}
+
+// DoDecode performs same as Do but extract Body in `obj` entry to avoid doble interpretation
+func (c *clusterConnection) DoDecode(ctx context.Context, req driver.Request, obj interface{}) (driver.Response, error) {
+	followLeaderRedirect := true
+	if ctx == nil {
+		ctx = context.Background()
+	} else {
+		if v := ctx.Value(keyFollowLeaderRedirect); v != nil {
+			if on, ok := v.(bool); ok {
+				followLeaderRedirect = on
+			}
+		}
+	}
+	// Timeout management.
+	// We take the given timeout and divide it in 3 so we allow for other servers
+	// to give it a try if an earlier server fails.
+	deadline, hasDeadline := ctx.Deadline()
+	var timeout time.Duration
+	if hasDeadline {
+		timeout = deadline.Sub(time.Now())
+	} else {
+		timeout = c.defaultTimeout
+	}
+
+	serverCount := len(c.servers)
+	var specificServer driver.Connection
+	if v := ctx.Value(keyEndpoint); v != nil {
+		if endpoint, ok := v.(string); ok {
+			// Specific endpoint specified
+			serverCount = 1
+			var err error
+			specificServer, err = c.getSpecificServer(endpoint)
+			if err != nil {
+				return nil, driver.WithStack(err)
+			}
+		}
+	}
+
+	timeoutDivider := math.Max(1.0, math.Min(3.0, float64(serverCount)))
+	attempt := 1
+	s := specificServer
+	if s == nil {
+		s = c.getCurrentServer()
+	}
+	for {
+		// Send request to specific endpoint with a 1/3 timeout (so we get 3 attempts)
+		serverCtx, cancel := context.WithTimeout(ctx, time.Duration(float64(timeout)/timeoutDivider))
+		resp, err := s.DoDecode(serverCtx, req, obj)
 		cancel()
 
 		isNoLeaderResponse := false

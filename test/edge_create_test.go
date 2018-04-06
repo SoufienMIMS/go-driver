@@ -27,7 +27,7 @@ import (
 	"reflect"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestCreateEdge creates an edge and then checks that it exists.
@@ -102,7 +102,7 @@ func TestCreateCustomEdge(t *testing.T) {
 func TestCreateEdgeReturnNew(t *testing.T) {
 	ctx := context.Background()
 	c := createClientFromEnv(t, true)
-	skipBelowVersion(c, "3.4", t) // See https://github.com/arangodb/arangodb/issues/2363
+	skipBelowVersion(c, "3.4", t) // See https://github.com/SoufienMIMS/arangodb/issues/2363
 	db := ensureDatabase(ctx, c, "edge_test", nil, t)
 	prefix := "create_edge_return_new_"
 	g := ensureGraph(ctx, db, prefix+"graph", nil, t)

@@ -27,7 +27,7 @@ import (
 	"strings"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // ensureEdgeCollection returns the edge collection with given name, creating it if needed.

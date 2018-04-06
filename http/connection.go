@@ -35,9 +35,9 @@ import (
 	"strings"
 	"time"
 
-	driver "github.com/arangodb/go-driver"
-	"github.com/arangodb/go-driver/cluster"
-	"github.com/arangodb/go-driver/util"
+	driver "github.com/SoufienMIMS/go-driver"
+	"github.com/SoufienMIMS/go-driver/cluster"
+	"github.com/SoufienMIMS/go-driver/util"
 	velocypack "github.com/arangodb/go-velocypack"
 )
 
@@ -274,6 +274,70 @@ func (c *httpConnection) Do(ctx context.Context, req driver.Request) (driver.Res
 		} else {
 			return nil, driver.WithStack(fmt.Errorf("Unsupported content type '%s' with status %d and content '%s'", ct, resp.StatusCode, string(body)))
 		}
+	}
+	if ctx != nil {
+		if v := ctx.Value(keyResponse); v != nil {
+			if respPtr, ok := v.(*driver.Response); ok {
+				*respPtr = httpResp
+			}
+		}
+	}
+	return httpResp, nil
+}
+
+// DoDecode performs same as Do but extract Body in `obj` entry
+func (c *httpConnection) DoDecode(ctx context.Context, req driver.Request, obj interface{}) (driver.Response, error) {
+	httpReq, ok := req.(httpRequest)
+	if !ok {
+		return nil, driver.WithStack(driver.InvalidArgumentError{Message: "request is not a httpRequest"})
+	}
+	r, err := httpReq.createHTTPRequest(c.endpoint)
+	rctx := ctx
+	if rctx == nil {
+		rctx = context.Background()
+	}
+	rctx = httptrace.WithClientTrace(rctx, &httptrace.ClientTrace{
+		WroteRequest: func(info httptrace.WroteRequestInfo) {
+			httpReq.WroteRequest(info)
+		},
+	})
+	r = r.WithContext(rctx)
+	if err != nil {
+		return nil, driver.WithStack(err)
+	}
+	resp, err := c.client.Do(r)
+	if err != nil {
+		return nil, driver.WithStack(err)
+	}
+
+	defer resp.Body.Close()
+	if obj == nil {
+		return nil, driver.WithStack(fmt.Errorf("Please join a non nil object for decoding"))
+	}
+
+	ct := resp.Header.Get("Content-Type")
+	var httpResp driver.Response
+	switch strings.Split(ct, ";")[0] {
+	case "application/json", "application/x-arango-dump":
+		// decode with JSON decoder
+		decoder := json.NewDecoder(resp.Body)
+		err = decoder.Decode(obj)
+		if err != nil && resp.StatusCode != http.StatusUnauthorized {
+			return nil, driver.WithStack(err)
+		}
+		httpResp = &httpJSONResponse{resp: resp, rawResponse: []byte{}}
+	case "application/x-velocypack":
+		httpResp = &httpVPackResponse{resp: resp, rawResponse: []byte{}}
+	default:
+		if resp.StatusCode == http.StatusUnauthorized {
+			// When unauthorized the server sometimes return a `text/plain` response.
+			return nil, driver.WithStack(driver.ArangoError{
+				HasError:     true,
+				Code:         resp.StatusCode,
+				ErrorMessage: string("Unauthorized"),
+			})
+		}
+		return nil, driver.WithStack(fmt.Errorf("Unsupported content type '%s' with status %d", ct, resp.StatusCode))
 	}
 	if ctx != nil {
 		if v := ctx.Value(keyResponse); v != nil {

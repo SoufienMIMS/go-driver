@@ -26,7 +26,7 @@ import (
 	"context"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // ensureDatabase is a helper to check if a database exists and create it if needed.

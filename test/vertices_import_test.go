@@ -26,7 +26,7 @@ import (
 	"context"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestImportVerticesWithKeys imports documents and then checks that it exists.

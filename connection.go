@@ -38,6 +38,9 @@ type Connection interface {
 	// Do performs a given request, returning its response.
 	Do(ctx context.Context, req Request) (Response, error)
 
+	// DoDecode performs same as Do() but deserialize Body in `obj`
+	DoDecode(ctx context.Context, req Request, obj interface{}) (Response, error)
+
 	// Unmarshal unmarshals the given raw object into the given result interface.
 	Unmarshal(data RawObject, result interface{}) error
 

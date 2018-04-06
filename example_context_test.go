@@ -27,7 +27,7 @@ package driver_test
 import (
 	"context"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 func ExampleWithRevision(collection driver.Collection) {

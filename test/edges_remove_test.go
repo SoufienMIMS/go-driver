@@ -26,7 +26,7 @@ import (
 	"context"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestRemoveEdges creates documents, removes them and then checks the removal has succeeded.
@@ -82,7 +82,7 @@ func TestRemoveEdgesReturnOld(t *testing.T) {
 	var ctx context.Context
 	c := createClientFromEnv(t, true)
 	db := ensureDatabase(ctx, c, "edges_test", nil, t)
-	skipBelowVersion(c, "3.4", t) // See https://github.com/arangodb/arangodb/issues/2363
+	skipBelowVersion(c, "3.4", t) // See https://github.com/SoufienMIMS/arangodb/issues/2363
 	prefix := "remove_edges_returnOld_"
 	g := ensureGraph(ctx, db, prefix+"graph", nil, t)
 	ec := ensureEdgeCollection(ctx, g, prefix+"citiesPerState", []string{prefix + "city"}, []string{prefix + "state"}, t)

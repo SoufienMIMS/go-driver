@@ -26,7 +26,7 @@ import (
 	"context"
 	"testing"
 
-	driver "github.com/arangodb/go-driver"
+	driver "github.com/SoufienMIMS/go-driver"
 )
 
 // TestRemoveVertex creates a document, remove it and then checks the removal has succeeded.
@@ -66,7 +66,7 @@ func TestRemoveVertex(t *testing.T) {
 func TestRemoveVertexReturnOld(t *testing.T) {
 	var ctx context.Context
 	c := createClientFromEnv(t, true)
-	skipBelowVersion(c, "3.4", t) // See https://github.com/arangodb/arangodb/issues/2365
+	skipBelowVersion(c, "3.4", t) // See https://github.com/SoufienMIMS/arangodb/issues/2365
 	db := ensureDatabase(ctx, c, "vertex_test", nil, t)
 	g := ensureGraph(ctx, db, "remove_vertex_returnOld_test", nil, t)
 	vc := ensureVertexCollection(ctx, g, "books", t)
